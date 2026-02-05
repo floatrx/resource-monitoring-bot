@@ -61,7 +61,7 @@ export const BOT_NAME = config.botName || 'Resource Monitor';
 export const CRON_SCHEDULE = config.cronSchedule || '*/15 * * * *';
 export let DEFAULT_CHAT_ID = config.chatId || '';
 export let DEFAULT_GROUP_ID = config.groupId || '';
-export const CONFIG_LOCKED = config.locked ?? false;
+export let CONFIG_LOCKED = config.locked ?? false;
 export const ENDPOINTS_TO_CHECK = config.endpoints;
 
 // Save config to file
@@ -104,5 +104,6 @@ export const removeChatId = (chatId: string, isGroup: boolean): boolean => {
 // Lock config (can only be unlocked manually)
 export const lockConfig = (): void => {
   config.locked = true;
+  CONFIG_LOCKED = true;
   saveConfig();
 };
