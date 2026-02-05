@@ -1,0 +1,31 @@
+{
+  "name": "resource-monitoring-bot",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "lint": "eslint src/",
+    "ts": "tsc --noEmit",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.19",
+    "express": "^5.2.1",
+    "grammy": "^1.39.3",
+    "lodash": "^4.17.23",
+    "node-cron": "^4.2.1",
+    "tsx": "^4.21.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/express": "^5.0.6",
+    "@types/lodash": "^4.17.23",
+    "@types/node": "^25",
+    "@types/node-cron": "^3.0.11",
+    "eslint": "^9",
+    "husky": "^9.1.7",
+    "prettier": "^3.8.1",
+    "typescript": "^5",
+    "typescript-eslint": "^8.54.0"
+  }
+}

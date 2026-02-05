@@ -1,0 +1,48 @@
+{
+  "botToken": "your_bot_token_here",
+  "botName": "Resource Monitor",
+  "cronSchedule": "*/15 * * * *",
+  "chatId": "",
+  "groupId": "",
+  "locked": false,
+  "endpoints": [
+    {
+      "label": "[prod] website",
+      "url": "https://example.com"
+    },
+    {
+      "label": "[prod] [api] backend health",
+      "url": "https://api.example.com/health"
+    },
+    {
+      "label": "[prod] [api] backend ping (HEAD)",
+      "url": "https://api.example.com/ping",
+      "options": { "method": "HEAD" }
+    },
+    {
+      "label": "[prod] [api] with docs link",
+      "url": "https://api.example.com/health",
+      "siteUrl": "https://api.example.com/docs"
+    },
+    {
+      "label": "[stage] website",
+      "url": "https://staging.example.com"
+    },
+    {
+      "label": "[dev] website",
+      "url": "https://dev.example.com"
+    },
+    {
+      "label": "[prod] [admin] dashboard",
+      "url": "https://admin.example.com"
+    },
+    {
+      "label": "[prod] [cdn] assets",
+      "url": "https://cdn.example.com/app.js"
+    },
+    {
+      "label": "[tool] external service",
+      "url": "https://service.example.com/status"
+    }
+  ]
+}
