@@ -1,47 +1,60 @@
-import express from 'express';
-import { botRouter } from '@/routes/bot';
-import { checkRouter } from '@/routes/check';
+import { createServer } from 'http';
+import { getBot } from '@/lib/tg';
 import { startCronJobs } from '@/lib/cron';
+import { handleCheck } from '@/routes/check';
 import { BOT_NAME } from '@/config/const';
+import { APP_VERSION } from '@/config/const';
 
 const PORT = process.env.PORT || 3030;
 
-const app = express();
+// Minimal HTTP server for health checks and manual triggers
+const server = createServer(async (req, res) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
 
-// Middleware
-app.use(express.json());
+  res.setHeader('Content-Type', 'application/json');
 
-// Request logging
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-  next();
-});
+  if (req.url === '/health') {
+    res.end(JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }));
+    return;
+  }
 
-// Routes
-app.use('/api/bot', botRouter);
-app.use('/api/check', checkRouter);
+  if (req.url === '/api/check' && req.method === 'GET') {
+    handleCheck();
+    res.end(JSON.stringify({ message: 'job added to queue' }));
+    return;
+  }
 
-// Health endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+  if (req.url === '/') {
+    res.end(JSON.stringify({ message: `${BOT_NAME} API`, version: APP_VERSION }));
+    return;
+  }
 
-// Root
-app.get('/', (req, res) => {
-  res.json({ message: `${BOT_NAME} API`, version: '0.2.0' });
+  res.statusCode = 404;
+  res.end(JSON.stringify({ message: 'not found' }));
 });
 
 // Graceful shutdown
+const bot = getBot();
+
 const shutdown = () => {
   console.log('Shutting down gracefully...');
+  bot.stop();
+  server.close();
   process.exit(0);
 };
 
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  startCronJobs();
+// Start bot with long polling
+bot.start({
+  onStart: () => {
+    console.log(`🤖 Bot started (long polling)`);
+    startCronJobs();
+  },
+});
+
+// Start HTTP server
+server.listen(PORT, () => {
+  console.log(`🚀 HTTP server on http://localhost:${PORT}`);
 });
